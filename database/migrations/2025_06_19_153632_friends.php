@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('friends', function (Blueprint $table) {
             $table->id()->index();
-            $table->integer('user_id')->index();
-            $table->integer('friend_id')->index();
+            $table->foreignId('user_id')->constrained('users', 'id');
+            $table->foreignId('friend_id')->constrained('users', 'id');
             $table->integer('status');
             $table->timestamps();
         });
