@@ -13,6 +13,7 @@ class ChatRoom extends Model
 
     protected $fillable = [
         'users_id',
+        'thumbnail'
     ];
 
     protected $cast = [
