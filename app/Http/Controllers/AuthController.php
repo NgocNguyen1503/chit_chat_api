@@ -19,7 +19,7 @@ class AuthController extends Controller
         return ApiResponse::success($data);
     }
 
-    public function authCallback()
+    public function authCallback(Request $request)
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
         $user = User::firstOrCreate([
@@ -32,7 +32,16 @@ class AuthController extends Controller
             'password' => Hash::make('12345678'),
             'online_status' => 1,
         ]);
-        Auth::login($user);
+        return redirect()->away('http://localhost:5173/index/' . $user->id);
+    }
+
+    public function user(Request $request)
+    {
+        $params = $request->all();
+        $user = User::select(['id', 'name', 'email', 'avatar'])
+            ->where('id', $params['user_id'])->first();
+        $user->token = $user->createToken($user->email)->plainTextToken;
+        data_forget($user, 'id');
         return ApiResponse::success($user);
     }
 }
