@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function authCallback(Request $request)
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
-        User::firstOrCreate([
+        $user = User::firstOrCreate([
             'email' => $googleUser->email
         ], [
             'name' => $googleUser->name,
@@ -32,6 +32,7 @@ class AuthController extends Controller
             'password' => Hash::make('12345678'),
             'online_status' => 1,
         ]);
-        return redirect()->away('http://localhost:5173/index/');
+        $user->token = $user->createToken($user->email)->plainTextToken;
+        return redirect()->away("http://localhost:5173/auth/callback?token=$user->token");
     }
 }
