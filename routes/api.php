@@ -25,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'auth'], function () {
     Route::get('/redirect', [AuthController::class, 'authRedirect']);
     Route::get('/callback', [AuthController::class, 'authCallback']);
-    Route::get('/user', [AuthController::class, 'user']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
