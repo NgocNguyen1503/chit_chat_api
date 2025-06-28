@@ -35,4 +35,20 @@ class AuthController extends Controller
         $user->token = $user->createToken($user->email)->plainTextToken;
         return redirect()->away("http://localhost:5173/auth/callback?token=$user->token");
     }
+
+    public function login(Request $request)
+    {
+        $params = $request->all();
+        try {
+            Auth::attempt([
+                'email' => $params['email'],
+                'password' => $params['password']
+            ]);
+            $user = Auth::user();
+            $user->token = $user->createToken($user->email)->plainTextToken;
+            return ApiResponse::success($user);
+        } catch (\Throwable $th) {
+            return ApiResponse::dataNotfound();
+        }
+    }
 }

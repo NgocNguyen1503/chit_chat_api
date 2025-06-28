@@ -25,10 +25,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'auth'], function () {
     Route::get('/redirect', [AuthController::class, 'authRedirect']);
     Route::get('/callback', [AuthController::class, 'authCallback']);
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'user'], function () {
-        Route::get('/list-friend', [UserController::class, 'listFriend']);
+        Route::get('/list-friend-info', [UserController::class, 'listFriendInfo']);
     });
 });
