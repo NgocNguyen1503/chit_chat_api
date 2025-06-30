@@ -17,7 +17,8 @@ class MessageSeeder extends Seeder
         $chatRooms = DB::table('chat_rooms')->get();
 
         foreach ($chatRooms as $chatRoom) {
-            $userIds = json_decode($chatRoom->users_id);
+            $userIds = explode(',', $chatRoom->users_id);
+            $userIds = array_map('trim', $userIds);
 
             $numMessages = rand(5, 20);
 

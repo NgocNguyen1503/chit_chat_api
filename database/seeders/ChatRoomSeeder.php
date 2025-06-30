@@ -40,7 +40,7 @@ class ChatRoomSeeder extends Seeder
             }
 
             DB::table('chat_rooms')->insert([
-                'users_id' => json_encode($userIds),
+                'users_id' => implode(',', $userIds),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

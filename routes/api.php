@@ -30,6 +30,6 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'user'], function () {
-        Route::get('/list-friend-info', [UserController::class, 'listFriendInfo']);
+        Route::get('/list-chat-room', [UserController::class, 'listChatRoom']);
     });
 });

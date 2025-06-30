@@ -11,28 +11,21 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function listFriendInfo()
+    public function listChatRoom()
     {
         try {
-            $friends = Friend::where('user_id', Auth::user()->id)
-                ->where('status', Friend::FRIEND_ACCEPTED)
-                ->rightJoin('users', 'users.id', '=', 'friends.friend_id')
-                ->get();
-            foreach ($friends as $friend) {
-                $chatRoom = ChatRoom::where('users_id', 'like', '%[' . Auth::user()->id . ',' . $friend->friend_id . ']%')
-                    ->orWhere('users_id', 'like', '%[' . $friend->friend_id . ',' . Auth::user()->id . ']%')
-                    ->first();
-                $friend->chat_room = $chatRoom;
-
-                if ($friend->chat_room) {
-                    $friend->last_message = Message::where('chatroom_id', $friend->chat_room->id)
+            $chatRooms = ChatRoom::all();
+            $userChatRooms = [];
+            foreach ($chatRooms as $chatRoom) {
+                $listUser = explode(",", $chatRoom->users_id);
+                if (in_array(Auth::user()->id, $listUser)) {
+                    $chatRoom->last_message = Message::where('chatroom_id', $chatRoom->id)
                         ->orderBy('created_at', 'DESC')
                         ->first();
-                } else {
-                    $friend->last_message = null;
+                    $userChatRooms[] = $chatRoom;
                 }
             }
-            return ApiResponse::success($friends);
+            return ApiResponse::success($userChatRooms);
         } catch (\Throwable $th) {
             return ApiResponse::unprocessableContent();
         }
