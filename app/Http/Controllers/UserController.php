@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Models\ChatRoom;
 use App\Models\Friend;
 use App\Models\Message;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,13 @@ class UserController extends Controller
                     $chatRoom->last_message = Message::where('chatroom_id', $chatRoom->id)
                         ->orderBy('created_at', 'DESC')
                         ->first();
+                    $chatRoom->chatroom_name = implode(
+                        ', ',
+                        User::whereIn('id', $listUser)
+                            ->where('id', '!=', Auth::user()->id)
+                            ->pluck('name')
+                            ->toArray()
+                    );
                     $userChatRooms[] = $chatRoom;
                 }
             }
