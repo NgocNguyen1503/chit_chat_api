@@ -31,5 +31,6 @@ Route::group(['prefix' => 'auth'], function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'user'], function () {
         Route::get('/list-chat-room', [UserController::class, 'listChatRoom']);
+        Route::get('/list-message', [UserController::class, 'listMessage']);
     });
 });
