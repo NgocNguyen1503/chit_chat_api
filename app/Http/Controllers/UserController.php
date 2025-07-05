@@ -61,4 +61,22 @@ class UserController extends Controller
         unset($chatroom->users_id, $chatroom->id);
         return ApiResponse::success($chatroom);
     }
+
+    public function sendMessage(Request $request)
+    {
+        $params = $request->all();
+        $message = Message::create([
+            'user_id' => Auth::user()->id,
+            'chatroom_id' => $params['chatroom_id'],
+            'message' => $params['message'],
+            'status' => 1,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        $message->user_name = Auth::user()->name;
+        $message->type = 'me';
+        $message->_created_at = Carbon::parse($message->created_at)->format('h:i A');
+        unset($message->created_at);
+        return ApiResponse::success($message);
+    }
 }
