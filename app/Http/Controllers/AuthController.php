@@ -33,7 +33,7 @@ class AuthController extends Controller
             'online_status' => 1,
         ]);
         $user->token = $user->createToken($user->email)->plainTextToken;
-        return redirect()->away("http://localhost:5173/#/auth/callback?token=$user->token");
+        return redirect()->away("http://localhost:5173/#/auth/callback?token=$user->token&user_id=$user->id");
     }
 
     public function login(Request $request)

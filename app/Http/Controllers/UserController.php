@@ -34,6 +34,7 @@ class UserController extends Controller
                     $userChatRooms[] = $chatRoom;
                 }
             }
+            $userChatRooms = collect($userChatRooms)->sortByDesc('created_at')->values();
             return ApiResponse::success($userChatRooms);
         } catch (\Throwable $th) {
             return ApiResponse::unprocessableContent();
@@ -53,13 +54,13 @@ class UserController extends Controller
             ->whereIn('id', explode(",", $chatroom->users_id))
             ->where('id', '!=', Auth::user()->id)
             ->get()->pluck('name')->implode(', ');
-        collect(explode(',', $chatroom->users_id))->count() > 2 ? $chatroom->chatroom_type = 'group' : $chatroom->chatroom_type = 'friend';
+        $chatroom->chatroom_type = collect(explode(',', $chatroom->users_id))->count() > 2 ? 'group' : 'friend';
         foreach ($chatroom->messages as $message) {
             $message->_created_at = Carbon::parse($message->created_at)->format('h:i A');
-            $message->user_id != Auth::user()->id ? $message->type = 'friend' : $message->type = 'me';
+            $message->type = $message->user_id != Auth::user()->id ? 'friend' : 'me';
             unset($message->user_id, $message->chatroom_id, $message->created_at);
         }
-        unset($chatroom->users_id, $chatroom->id);
+        unset($chatroom->id);
         return ApiResponse::success($chatroom);
     }
 
