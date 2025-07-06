@@ -51,6 +51,7 @@ class UserController extends Controller
             ])->first();
         $chatroom->chatroom_name = User::select(['id', 'name'])
             ->whereIn('id', explode(",", $chatroom->users_id))
+            ->where('id', '!=', Auth::user()->id)
             ->get()->pluck('name')->implode(', ');
         collect(explode(',', $chatroom->users_id))->count() > 2 ? $chatroom->chatroom_type = 'group' : $chatroom->chatroom_type = 'friend';
         foreach ($chatroom->messages as $message) {
